@@ -2,7 +2,7 @@ public class HW1 {
     public static void main(String[] args) {
         System.out.print("Họ và tên: Đồng Mạnh Hùng\t");
         System.out.print("MSV: 23020370\t");
-        System.out.print("Lớp: K6AI2\t");
+        System.out.print("Lớp: K68AI2\t");
         System.out.print("Username: Hung23020370\t");
         System.out.println("Địa chỉ email: donghung729@gmail.com");
         for(int i = 9; i >=1; i--) {
