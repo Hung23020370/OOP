@@ -12,10 +12,19 @@ import java.util.TimerTask;
 public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     int boardWidth = 360;
     int boardHeight = 640;
+
+    // Ảnh
     Image backgroundImg;
     Image birdImg;
     Image topPipeImg;
     Image bottomPipeImg;
+    Image topRedPipeImg;
+    Image bottomRedPipeImg;
+    Image topBluePipeImg;
+    Image bottomBluePipeImg;
+    Image topGreenPipeImg;
+    Image bottomGreenPipeImg;
+
     //Bird
     float birdX = boardWidth/8;
     float birdY = boardHeight/2;
@@ -44,19 +53,19 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         int width = pipeWidth;
         int height = pipeHeight;
         Image img;
-        boolean passed = false;
+        boolean passed = false;// false - chim chưa bay qua ống và true là chim đã bay qua ống
         Pipe(Image img) {
             this.img = img;
         }
     }
     Bird bird;
-    Timer gameLoop;
-    Timer placePipesTimer;
+    Timer gameLoop; // Thời gian vẽ lại bố cục
+    Timer placePipesTimer;  // Thời gian vẽ ống
     boolean gameStarted = false;
     boolean gameOver = false;
-    float velocityY = 0;
-    float velpcityX = -4;
-    float gravity = 0.4f;
+    float velocityY = -8;  // vận tốc bay lên
+    float velpcityX = -4; // vận tốc bay ngang
+    float gravity = 0.4f; // trọng lực
     ArrayList<Pipe> pipes;
     Random random = new Random();
 
@@ -70,16 +79,23 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         //setBackground(Color.BLUE);
         backgroundImg = new ImageIcon(getClass().getResource("flappybirdbg.png")).getImage();
         birdImg = new ImageIcon(getClass().getResource("flappybird.png")).getImage();
+
         topPipeImg = new ImageIcon(getClass().getResource("toppipe.png")).getImage();
         bottomPipeImg = new ImageIcon(getClass().getResource("bottompipe.png")).getImage();
+        topRedPipeImg = new ImageIcon(getClass().getResource("toppipered.png")).getImage();
+        bottomRedPipeImg = new ImageIcon(getClass().getResource("bottompipered.png")).getImage();
+        topBluePipeImg = new ImageIcon(getClass().getResource("toppipeblue.png")).getImage();
+        bottomBluePipeImg = new ImageIcon(getClass().getResource("bottompipeblue.png")).getImage();
+        topGreenPipeImg = new ImageIcon(getClass().getResource("toppipexanh.png")).getImage();
+        bottomGreenPipeImg = new ImageIcon(getClass().getResource("bottompipexanh.png")).getImage();
 
         bird = new Bird(birdImg);
         pipes = new ArrayList<>();
 
-        placePipesTimer = new Timer(1000, new ActionListener() {
+        placePipesTimer = new Timer(1500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                placePipes();
+                randomPipes();
             }
         });
         //placePipesTimer.start();
@@ -87,7 +103,25 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         //gameLoop.start();
     }
 
-    public void placePipes() {
+    public void colorPipes(Image topPipe, Image bottomPipe) {
+
+    }
+    public void randomPipes() {
+        double randomNumber = random.nextDouble();
+        if(randomNumber < 0.1) {
+            placePipes(topGreenPipeImg, bottomGreenPipeImg);
+        }
+        else if(randomNumber < 0.2) {
+            placePipes(topRedPipeImg, bottomRedPipeImg);
+        }
+        else if(randomNumber < 0.3) {
+            placePipes(topBluePipeImg, bottomBluePipeImg);
+        }
+        else {
+            placePipes(topPipeImg, bottomPipeImg);
+        }
+    }
+    public void placePipes(Image topPipeImg, Image bottomPipeImg) {
         int randomPipeY = (int) (pipeY - pipeHeight/4 - Math.random()*(pipeHeight/2));
         int openingSpace  = boardHeight/4;
 
@@ -113,12 +147,12 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
             g.drawImage(pipe.img,pipe.x,pipe.y,pipe.width,pipe.height,null);
         }
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial",Font.PLAIN,32));
+        g.setFont(new Font("Arial",Font.BOLD,35));
         if(gameOver) {
-            g.drawString("GAME OVER: " + String.valueOf((int) score), 10, 35);
+            g.drawString("GAME OVER: " + String.valueOf((int) score), 60, 320);
         }
         else {
-            g.drawString(String.valueOf((int) score), 10, 35);
+            g.drawString(String.valueOf((int) score), 180, 35);
         }
 
     }
@@ -157,7 +191,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     }
     @Override
     public void keyPressed(KeyEvent e) {
-        velocityY = -8;
+        //velocityY = -8;
         if(e.getKeyCode() == KeyEvent.VK_SPACE){
             if(!gameStarted) {
                 gameStarted = true; // Khi người dùng nhấn phím cách, trò chơi bắt đầu.
