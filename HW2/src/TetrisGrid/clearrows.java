@@ -1,18 +1,5 @@
-public class clearrows {
-    public static void main(String[] args) {
-        boolean[][] grid = new boolean[][] {
-                {true, true, true},
-                {true, true, false},
-                {false, false, true},
-                {true, true, true},
-                {false, true, true},
-                {false, false, false},
-                {false, false, false},
-        };
-        clearRows(grid);
-    }
-
-    public static void clearRows(boolean[][] grid) {
+public class ClearRows {
+    public static boolean[][] clearRows(boolean[][] grid) {
         int rows = grid.length; // Số hàng của mảng
         int cols = grid[0].length; // Số cột của mảng
         for (int i = 0; i < rows; i++) {
@@ -22,12 +9,7 @@ public class clearrows {
             }
             if(cnt == cols) newGrid(grid,i,rows,cols);
         }
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                System.out.print(grid[i][j] + " ");
-            }
-            System.out.println("");
-        }
+        return grid;
     }
 
     public static void newGrid(boolean[][] grid, int x, int rows, int cols) {
