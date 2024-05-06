@@ -10,8 +10,8 @@ import java.util.Random;
 import java.util.TimerTask;
 
 public class FlappyBird extends JPanel implements ActionListener, KeyListener {
-    int boardWidth = 360;
-    int boardHeight = 640;
+    float boardWidth = 360;
+    float boardHeight = 640;
 
     // Ảnh
     Image backgroundImg;
@@ -22,21 +22,13 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     Image bottomRedPipeImg;
     Image topBluePipeImg;
     Image bottomBluePipeImg;
-    Image topGreenPipeImg;
-    Image bottomGreenPipeImg;
+    Image fireImg;
 
     //Bird
     float birdX = boardWidth/8;
     float birdY = boardHeight/2;
     float birdWidth = 34;
     float birdHeight = 24;
-
-    //Pipes
-    int pipeX = boardWidth;
-    int pipeY = 0;
-    int pipeWidth = 64;
-    int pipeHeight = 512;
-
     class Bird {
         float x = birdX;
         float y = birdY;
@@ -47,31 +39,56 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
             this.img = img;
         }
     }
+
+
+    //Pipes
+    float pipeX = boardWidth;
+    float pipeY = 0;
+    float pipeWidth = 64;
+    float pipeHeight = 512;
     class Pipe {
-        int x = pipeX;
-        int y = pipeY;
-        int width = pipeWidth;
-        int height = pipeHeight;
+        float x = pipeX;
+        float y = pipeY;
+        float width = pipeWidth;
+        float height = pipeHeight;
         Image img;
         boolean passed = false;// false - chim chưa bay qua ống và true là chim đã bay qua ống
         Pipe(Image img) {
             this.img = img;
         }
     }
+
+    //Skill
+    float skillX = boardWidth + 70;
+    float skillY = (boardHeight - 40) /2 ;
+    float skillWidth = 70;
+    float skillHeight = 40;
+    class Skill {
+        float x = skillX;
+        float y = skillY;
+        float width = skillWidth;
+        float height = skillHeight;
+        Image img;
+        Skill(Image img) {
+            this.img = img;
+        }
+    }
+
     Bird bird;
     Timer gameLoop; // Thời gian vẽ lại bố cục
     Timer placePipesTimer;  // Thời gian vẽ ống
     boolean gameStarted = false;
     boolean gameOver = false;
-    float velocityY = -8;  // vận tốc bay lên
+    float velocityY = -3;  // vận tốc bay lên
     float velpcityX = -4; // vận tốc bay ngang
-    float gravity = 0.4f; // trọng lực
-    ArrayList<Pipe> pipes;
+    float gravity = 0.1f; // trọng lực
+    ArrayList <Pipe> pipes;
+    ArrayList <Skill> skills;
     Random random = new Random();
 
     double score = 0;
     FlappyBird(){
-        setPreferredSize(new Dimension(boardWidth,boardHeight));
+        setPreferredSize(new Dimension((int) boardWidth,(int) boardHeight));
 
         setFocusable(true);
         addKeyListener(this);
@@ -84,13 +101,13 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         bottomPipeImg = new ImageIcon(getClass().getResource("bottompipe.png")).getImage();
         topRedPipeImg = new ImageIcon(getClass().getResource("toppipered.png")).getImage();
         bottomRedPipeImg = new ImageIcon(getClass().getResource("bottompipered.png")).getImage();
-        topBluePipeImg = new ImageIcon(getClass().getResource("toppipeblue.png")).getImage();
-        bottomBluePipeImg = new ImageIcon(getClass().getResource("bottompipeblue.png")).getImage();
-        topGreenPipeImg = new ImageIcon(getClass().getResource("toppipexanh.png")).getImage();
-        bottomGreenPipeImg = new ImageIcon(getClass().getResource("bottompipexanh.png")).getImage();
+
+        //Skill
+        fireImg = new ImageIcon(getClass().getResource("fire.png")).getImage();
 
         bird = new Bird(birdImg);
         pipes = new ArrayList<>();
+        skills = new ArrayList<>();
 
         placePipesTimer = new Timer(1500, new ActionListener() {
             @Override
@@ -102,28 +119,33 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         gameLoop = new Timer(1000/60,this);
         //gameLoop.start();
     }
+    public void addSkill() {
+        Skill fireTop = new Skill(fireImg);
+        fireTop.y = 80;
+        skills.add(fireTop);
 
-    public void colorPipes(Image topPipe, Image bottomPipe) {
+        Skill fireCenter = new Skill(fireImg);
+        skills.add(fireCenter);
 
+        Skill fireBottom = new Skill(fireImg);
+        fireBottom.y = 520;
+        skills.add(fireBottom);
     }
+
     public void randomPipes() {
         double randomNumber = random.nextDouble();
-        if(randomNumber < 0.1) {
-            placePipes(topGreenPipeImg, bottomGreenPipeImg);
-        }
-        else if(randomNumber < 0.2) {
+        if(randomNumber < 0.3) {
             placePipes(topRedPipeImg, bottomRedPipeImg);
-        }
-        else if(randomNumber < 0.3) {
-            placePipes(topBluePipeImg, bottomBluePipeImg);
+            addSkill();
         }
         else {
             placePipes(topPipeImg, bottomPipeImg);
         }
     }
+
     public void placePipes(Image topPipeImg, Image bottomPipeImg) {
-        int randomPipeY = (int) (pipeY - pipeHeight/4 - Math.random()*(pipeHeight/2));
-        int openingSpace  = boardHeight/4;
+        float randomPipeY = (int) (pipeY - pipeHeight/4 - Math.random()*(pipeHeight/2));
+        float openingSpace  = boardHeight/4;
 
         Pipe topPipe = new Pipe(topPipeImg);
         topPipe.y = randomPipeY;
@@ -139,13 +161,19 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     }
 
     private void draw(Graphics g) {
-        g.drawImage(backgroundImg,0,0,boardWidth,boardHeight,null);
+        g.drawImage(backgroundImg,0,0,(int) boardWidth,(int)boardHeight,null);
         g.drawImage(birdImg,(int)bird.x,(int)bird.y,(int)bird.width,(int)bird.height,null);
 
         for (int i = 0; i < pipes.size(); i++) {
             Pipe pipe = pipes.get(i);
-            g.drawImage(pipe.img,pipe.x,pipe.y,pipe.width,pipe.height,null);
+            g.drawImage(pipe.img,(int)pipe.x,(int)pipe.y,(int)pipe.width,(int)pipe.height,null);
         }
+
+        for (int i = 0; i < skills.size(); i++) {
+            Skill skill = skills.get(i);
+            g.drawImage(skill.img,(int)skill.x,(int)skill.y,(int)skill.width,(int)skill.height,null);
+        }
+
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial",Font.BOLD,35));
         if(gameOver) {
@@ -169,6 +197,10 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
                 pipe.passed = true;
             }
             if(collision(bird, pipe)) gameOver = true;
+        }
+        for (int i = 0; i < skills.size(); i++) {
+            Skill skill = skills.get(i);
+            skill.x += 2 * velpcityX;
         }
         if(bird.y > boardHeight) gameOver = true;
     }
@@ -201,14 +233,14 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
             }
             if(gameOver) {
                 bird.y = birdY;
-                velocityY = -8;
+                velocityY = -4;
                 pipes.clear();
                 score = 0;
                 gameOver = false;
                 gameLoop.start();
                 placePipesTimer.start();
             }
-            velocityY = -8;
+            velocityY = -3;
         }
 
     }
