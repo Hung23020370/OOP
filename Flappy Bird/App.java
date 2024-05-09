@@ -3,7 +3,7 @@ import java.awt.*;
 
 public class App {
     public static void main(String[] args) {
-        int boardWidth = 360;
+        int boardWidth = 400;
         int boardHeight = 640;
 
         JFrame jFrame = new JFrame("Flappy Bird");
