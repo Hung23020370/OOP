@@ -137,11 +137,6 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
         menu = new Menu();
 
-        if(state == STATE.MENU) {
-            JButton jButton;
-            jButton = new JButton("HUNG");
-        }
-
         Ground ground1 = new Ground(groudImg);
         ground1.x = 0;
         grounds.add(ground1);
@@ -166,6 +161,11 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         gameLoop = new Timer(1000/60,this);
     }
 
+    public JButton hh() {
+        JButton jButton;
+        jButton = new JButton("HUNG");
+        return jButton;
+    }
 
     public void addSkill() {
         Skill fireTop = new Skill(fireImg);
@@ -207,6 +207,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         if(state == STATE.GAME) draw(g);
+        else Menu.contentMenu(g);
     }
 
     private void draw(Graphics g) {
