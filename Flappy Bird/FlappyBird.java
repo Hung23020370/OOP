@@ -1,13 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Random;
-import java.util.TimerTask;
 
 public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     float boardWidth = 400;
@@ -86,9 +81,9 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         }
     }
 
-    private enum STATE {
+    public enum STATE {
         MENU,
-        GAME,
+        GAME
     }
 
     Bird bird;
@@ -108,7 +103,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
     double score = 0;
 
-    STATE state = STATE.MENU;
+    static STATE state = STATE.MENU;
     Menu menu;
 
     FlappyBird(){
@@ -116,8 +111,8 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
         setFocusable(true);
         addKeyListener(this);
+        addMouseListener(new MouseInput());
 
-        //setBackground(Color.BLUE);
         backgroundImg = new ImageIcon(getClass().getResource("bg.png")).getImage();
         groudImg = new ImageIcon(getClass().getResource("ground.png")).getImage();
         birdImg = new ImageIcon(getClass().getResource("flappybird.png")).getImage();
@@ -159,12 +154,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
             }
         });
         gameLoop = new Timer(1000/60,this);
-    }
-
-    public JButton hh() {
-        JButton jButton;
-        jButton = new JButton("HUNG");
-        return jButton;
+        gameLoop.start(); // Bắt đầu vòng lặp game khi bắt đầu.
     }
 
     public void addSkill() {
@@ -240,9 +230,11 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
     }
     public void move() {
-        velocityY += gravity ;
-        bird.y += velocityY ;
-        bird.y = Math.max(0,bird.y);
+        if(gameStarted) {
+            velocityY += gravity;
+            bird.y += velocityY;
+            bird.y = Math.max(0, bird.y);
+        }
 
         for (int i = 0; i < pipes.size(); i++) {
             Pipe pipe = pipes.get(i);
@@ -261,7 +253,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
         for (int i = 0; i < grounds.size(); i++) {
             Ground ground = grounds.get(i);
-            ground.x -= 3;
+            ground.x -= 2;
         }
 
         if(bird.y >= boardHeight - 104) gameOver = true;
@@ -280,10 +272,8 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     }
     @Override
     public void actionPerformed(ActionEvent e) {
+        repaint();
         if(state == STATE.GAME) {
-            if (!gameStarted)
-                return;
-            repaint();
             move();
             if (gameOver) {
                 placePipesTimer.stop();
@@ -297,7 +287,6 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         if(e.getKeyCode() == KeyEvent.VK_SPACE){
             if(!gameStarted) {
                 gameStarted = true; // Khi người dùng nhấn phím cách, trò chơi bắt đầu.
-                gameLoop.start(); // Bắt đầu vòng lặp game khi bắt đầu.
                 placePipesTimer.start();
                 placeGroundTimer.start();
                 return;
