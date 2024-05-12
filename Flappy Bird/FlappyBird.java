@@ -10,7 +10,9 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
     // Ảnh
     Image backgroundImg;
-    Image birdImg;
+    Image birdImg1;
+    Image birdImg2;
+    Image birdImg3;
     Image topPipeImg;
     Image bottomPipeImg;
     Image topRedPipeImg;
@@ -56,8 +58,8 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     class Ground {
         float x = boardWidth;
         float y = boardHeight - 80;
-        float width = boardWidth;
-        float height = 80;
+        float width = (float) (boardWidth * 2);
+        float height = boardWidth/4;
         Image img;
         Ground(Image img) {
             this.img = img;
@@ -88,16 +90,20 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
     Bird bird;
     Timer gameLoop; // Thời gian vẽ lại bố cục
+    Timer birdTimer;
     Timer placePipesTimer;  // Thời gian vẽ ống
     Timer placeGroundTimer;
     boolean gameStarted = false;
     boolean gameOver = false;
     float velocityY = -7;  // vận tốc bay lên
-    float velpcityX = -3; // vận tốc bay ngang
+    float velocityX = -3; // vận tốc bay ngang
     float gravity = 0.4f; // trọng lực
+    ArrayList <Bird> birds;
     ArrayList <Pipe> pipes;
     ArrayList <Skill> skills;
     ArrayList <Ground> grounds;
+    private int frameCount = 3;
+    private int currentFrame = 0; // Chỉ số của hình ảnh hiện tại trong chuỗi hình ảnh
 
     Random random = new Random();
 
@@ -115,7 +121,10 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
         backgroundImg = new ImageIcon(getClass().getResource("bg.png")).getImage();
         groudImg = new ImageIcon(getClass().getResource("ground.png")).getImage();
-        birdImg = new ImageIcon(getClass().getResource("flappybird.png")).getImage();
+        birdImg1 = new ImageIcon(getClass().getResource("bird1.png")).getImage();
+        birdImg2 = new ImageIcon(getClass().getResource("bird2.png")).getImage();
+        birdImg3 = new ImageIcon(getClass().getResource("bird3.png")).getImage();
+
 
         topPipeImg = new ImageIcon(getClass().getResource("toppipe.png")).getImage();
         bottomPipeImg = new ImageIcon(getClass().getResource("bottompipe.png")).getImage();
@@ -125,19 +134,29 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         //Skill
         fireImg = new ImageIcon(getClass().getResource("fire.png")).getImage();
 
-        bird = new Bird(birdImg);
+        birds = new ArrayList<>();
         pipes = new ArrayList<>();
         skills = new ArrayList<>();
         grounds = new ArrayList<>();
 
-        menu = new Menu();
+        bird = new Bird(birdImg1);
+        birds.add(bird);
+        bird = new Bird(birdImg2);
+        birds.add(bird);
+        bird = new Bird(birdImg3);
+        birds.add(bird);
 
-        Ground ground1 = new Ground(groudImg);
-        ground1.x = 0;
-        grounds.add(ground1);
+        Ground ground = new Ground(groudImg);
+        ground.x = 0;
+        grounds.add(ground);
 
-        Ground ground2 = new Ground(groudImg);
-        grounds.add(ground2);
+        birdTimer = new Timer(200, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                currentFrame = (currentFrame + 1) % frameCount;
+                repaint();
+            }
+        });
 
         placePipesTimer = new Timer(1500, new ActionListener() {
             @Override
@@ -146,15 +165,21 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
             }
         });
 
-        placeGroundTimer = new Timer(1000/2, new ActionListener() {
+        placeGroundTimer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Ground ground= new Ground(groudImg);
                 grounds.add(ground);
             }
         });
+
+        menu = new Menu();
+
         gameLoop = new Timer(1000/60,this);
-        gameLoop.start(); // Bắt đầu vòng lặp game khi bắt đầu.
+
+        gameLoop.start();
+        birdTimer.start();
+        placeGroundTimer.start();
     }
 
     public void addSkill() {
@@ -197,12 +222,13 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         if(state == STATE.GAME) draw(g);
-        else Menu.contentMenu(g);
+        else menu.contentMenu(g);
     }
 
     private void draw(Graphics g) {
         g.drawImage(backgroundImg,0,0,(int) boardWidth,(int)boardHeight,null);
-        g.drawImage(birdImg,(int)bird.x,(int)bird.y,(int)bird.width,(int)bird.height,null);
+        Bird bird = birds.get(currentFrame);
+        g.drawImage(bird.img,(int)bird.x,(int)bird.y,(int)bird.width,(int)bird.height,null);
 
         for (int i = 0; i < pipes.size(); i++) {
             Pipe pipe = pipes.get(i);
@@ -232,13 +258,16 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     public void move() {
         if(gameStarted) {
             velocityY += gravity;
-            bird.y += velocityY;
-            bird.y = Math.max(0, bird.y);
+            for (int i = 0; i < birds.size(); i++) {
+                Bird bird = birds.get(i);
+                bird.y += velocityY;
+                bird.y = Math.max(0, bird.y);
+            }
         }
 
         for (int i = 0; i < pipes.size(); i++) {
             Pipe pipe = pipes.get(i);
-            pipe.x += velpcityX;
+            pipe.x += velocityX;
             if(!pipe.passed && bird.x > pipe.x + pipe.width) {
                 score += 0.5;
                 pipe.passed = true;
@@ -247,13 +276,13 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         }
         for (int i = 0; i < skills.size(); i++) {
             Skill skill = skills.get(i);
-            skill.x += 2 * velpcityX;
+            skill.x += 2 * velocityX;
             if(collisionSkill(bird, skill)) gameOver = true;
         }
 
         for (int i = 0; i < grounds.size(); i++) {
             Ground ground = grounds.get(i);
-            ground.x -= 2;
+            ground.x += - 2;
         }
 
         if(bird.y >= boardHeight - 104) gameOver = true;
@@ -272,34 +301,46 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        repaint();
+        if(state == STATE.MENU) repaint();
         if(state == STATE.GAME) {
-            move();
-            if (gameOver) {
+            if(gameOver){
+                birdTimer.stop();
                 placePipesTimer.stop();
+                placeGroundTimer.stop();
                 gameLoop.stop();
+                birds.clear();
+                pipes.clear();
+                skills.clear();
+                bird = new Bird(birdImg1);
+                birds.add(bird);
+                bird = new Bird(birdImg2);
+                birds.add(bird);
+                bird = new Bird(birdImg3);
+                birds.add(bird);
+                score = 0;
+                velocityY = -7;
+                gameOver = false;
+                gameStarted = false;
+                return;
             }
+            move();
+            repaint();
         }
     }
     @Override
     public void keyPressed(KeyEvent e) {
         if(state == STATE.GAME) {
         if(e.getKeyCode() == KeyEvent.VK_SPACE){
+            if(gameOver) {
+                return;
+            }
             if(!gameStarted) {
                 gameStarted = true; // Khi người dùng nhấn phím cách, trò chơi bắt đầu.
                 placePipesTimer.start();
                 placeGroundTimer.start();
-                return;
-            }
-            if(gameOver) {
-                bird.y = birdY;
-                velocityY = -7;
-                pipes.clear();
-                skills.clear();
-                score = 0;
-                gameOver = false;
+                birdTimer.start();
                 gameLoop.start();
-                placePipesTimer.start();
+                return;
             }
             velocityY = -7;
         }
