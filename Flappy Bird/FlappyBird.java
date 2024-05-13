@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -69,7 +70,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
     //Skill
     float skillX = boardWidth + 100;
-    float skillY = (boardHeight - 40) /2 ;
+    float skillY = (boardHeight - 120) /2 ;
     float skillWidth = 70;
     float skillHeight = 40;
     class Skill {
@@ -89,12 +90,13 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     }
 
     Bird bird;
-    Timer gameLoop; // Thời gian vẽ lại bố cục
-    Timer birdTimer;
+    static Timer gameLoop; // Thời gian vẽ lại bố cục
+    static Timer birdTimer;
     Timer placePipesTimer;  // Thời gian vẽ ống
-    Timer placeGroundTimer;
+    static Timer placeGroundTimer;
     boolean gameStarted = false;
-    boolean gameOver = false;
+    static boolean gameOver = false;
+    static boolean gameRestart = true;
     float velocityY = -7;  // vận tốc bay lên
     float velocityX = -3; // vận tốc bay ngang
     float gravity = 0.4f; // trọng lực
@@ -108,16 +110,18 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     Random random = new Random();
 
     double score = 0;
+    double bestScore = 0;
 
     static STATE state = STATE.MENU;
-    Menu menu;
+    MenuGameStart menuGameStart;
+    MenuGameOver menuGameOver;
 
     FlappyBird(){
         setPreferredSize(new Dimension((int) boardWidth,(int) boardHeight));
 
         setFocusable(true);
         addKeyListener(this);
-        addMouseListener(new MouseInput());
+        addMouseListener(new MouseGame());
 
         backgroundImg = new ImageIcon(getClass().getResource("bg.png")).getImage();
         groudImg = new ImageIcon(getClass().getResource("ground.png")).getImage();
@@ -173,7 +177,8 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
             }
         });
 
-        menu = new Menu();
+        menuGameStart = new MenuGameStart();
+        menuGameOver = new MenuGameOver();
 
         gameLoop = new Timer(1000/60,this);
 
@@ -184,14 +189,14 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
     public void addSkill() {
         Skill fireTop = new Skill(fireImg);
-        fireTop.y = 80;
+        fireTop.y = 50;
         skills.add(fireTop);
 
         Skill fireCenter = new Skill(fireImg);
         skills.add(fireCenter);
 
         Skill fireBottom = new Skill(fireImg);
-        fireBottom.y = 520;
+        fireBottom.y = 470;
         skills.add(fireBottom);
     }
 
@@ -222,38 +227,39 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         if(state == STATE.GAME) draw(g);
-        else menu.contentMenu(g);
+        else menuGameStart.contentMenu(g);
     }
 
     private void draw(Graphics g) {
-        g.drawImage(backgroundImg,0,0,(int) boardWidth,(int)boardHeight,null);
+        g.drawImage(backgroundImg, 0, 0, (int) boardWidth, (int) boardHeight, null);
         Bird bird = birds.get(currentFrame);
-        g.drawImage(bird.img,(int)bird.x,(int)bird.y,(int)bird.width,(int)bird.height,null);
+        g.drawImage(bird.img, (int) bird.x, (int) bird.y, (int) bird.width, (int) bird.height, null);
 
         for (int i = 0; i < pipes.size(); i++) {
             Pipe pipe = pipes.get(i);
-            g.drawImage(pipe.img,(int)pipe.x,(int)pipe.y,(int)pipe.width,(int)pipe.height,null);
+            g.drawImage(pipe.img, (int) pipe.x, (int) pipe.y, (int) pipe.width, (int) pipe.height, null);
         }
 
         for (int i = 0; i < skills.size(); i++) {
             Skill skill = skills.get(i);
-            g.drawImage(skill.img,(int)skill.x,(int)skill.y,(int)skill.width,(int)skill.height,null);
+            g.drawImage(skill.img, (int) skill.x, (int) skill.y, (int) skill.width, (int) skill.height, null);
         }
 
         for (int i = 0; i < grounds.size(); i++) {
             Ground ground = grounds.get(i);
-            g.drawImage(ground.img,(int)ground.x,(int)ground.y,(int)ground.width,(int)ground.height,null);
+            g.drawImage(ground.img, (int) ground.x, (int) ground.y, (int) ground.width, (int) ground.height, null);
         }
 
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial",Font.BOLD,35));
-        if(gameOver) {
-            g.drawString("GAME OVER:" + String.valueOf((int) score), 55, 320);
-        }
-        else {
-            g.drawString(String.valueOf((int) score), 180, 35);
-        }
+        bestScore = Math.max(score, bestScore);
 
+        if (gameOver) {
+            menuGameOver.contentMenu(g,score,bestScore);
+        }
+        else{
+            g.setFont(new Font("04B_19", Font.PLAIN, 35));
+            g.drawString(String.valueOf((int) score), 190, 40);
+        }
     }
     public void move() {
         if(gameStarted) {
@@ -319,7 +325,6 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
                 birds.add(bird);
                 score = 0;
                 velocityY = -7;
-                gameOver = false;
                 gameStarted = false;
                 return;
             }
@@ -331,15 +336,10 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     public void keyPressed(KeyEvent e) {
         if(state == STATE.GAME) {
         if(e.getKeyCode() == KeyEvent.VK_SPACE){
-            if(gameOver) {
-                return;
-            }
-            if(!gameStarted) {
+            if(!gameStarted && gameRestart) {
                 gameStarted = true; // Khi người dùng nhấn phím cách, trò chơi bắt đầu.
+                gameRestart = false;
                 placePipesTimer.start();
-                placeGroundTimer.start();
-                birdTimer.start();
-                gameLoop.start();
                 return;
             }
             velocityY = -7;
