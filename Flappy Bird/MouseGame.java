@@ -18,7 +18,10 @@ public class MouseGame implements MouseListener{
             if (x >= 130 && x <= 270 && y >= 250 && y <= 250 + 140 / 3) {
                 FlappyBird.state = FlappyBird.STATE.GAME;
             }
-
+            //Help
+            if (x >= 130 && x <= 270 && y >= 330 && y <= 330 + 140 / 3) {
+                FlappyBird.state = FlappyBird.STATE.GAME;
+            }
             //QuitGame
             if (x >= 130 && x <= 270 && y >= 410 && y <= 410 + 140 / 3) {
                 System.exit(1);
