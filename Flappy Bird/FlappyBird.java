@@ -86,6 +86,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
     public enum STATE {
         MENU,
+        HELP,
         GAME
     }
 
@@ -115,6 +116,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     static STATE state = STATE.MENU;
     MenuGameStart menuGameStart;
     MenuGameOver menuGameOver;
+    Help help;
 
     FlappyBird(){
         setPreferredSize(new Dimension((int) boardWidth,(int) boardHeight));
@@ -179,6 +181,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
         menuGameStart = new MenuGameStart();
         menuGameOver = new MenuGameOver();
+        help = new Help();
 
         gameLoop = new Timer(1000/60,this);
 
@@ -227,7 +230,8 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         if(state == STATE.GAME) draw(g);
-        else menuGameStart.contentMenu(g);
+        else if(state == STATE.MENU) menuGameStart.contentMenu(g);
+        else if(state == STATE.HELP) help.contentHelp(g);
     }
 
     private void draw(Graphics g) {

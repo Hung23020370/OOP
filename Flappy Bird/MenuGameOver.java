@@ -5,6 +5,7 @@ public class MenuGameOver {
     Image gameOverImg;
     Image restartImg;
 
+
     public void contentMenu(Graphics g, double score, double bestScore) {
         gameOverImg = new ImageIcon(MenuGameOver.class.getResource("gameover.png")).getImage();
         restartImg = new ImageIcon(MenuGameOver.class.getResource("RESTART.png")).getImage();

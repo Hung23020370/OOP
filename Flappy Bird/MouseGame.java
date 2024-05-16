@@ -3,6 +3,8 @@ import java.awt.event.MouseListener;
 
 public class MouseGame implements MouseListener{
 
+    Help help = new Help();
+
     @Override
     public void mouseClicked(MouseEvent e) {
 
@@ -20,7 +22,14 @@ public class MouseGame implements MouseListener{
             }
             //Help
             if (x >= 130 && x <= 270 && y >= 330 && y <= 330 + 140 / 3) {
-                FlappyBird.state = FlappyBird.STATE.GAME;
+                FlappyBird.state = FlappyBird.STATE.HELP;
+            }
+//            g.drawImage(rightImg,340,580,50,50,null);
+//            g.drawImage(leftImg,10,580,50,50,null);
+            if(FlappyBird.state == FlappyBird.STATE.HELP) {
+                if(x >= 340 && x <= 390 && y >= 580 && y <= 630 && help.numberPage + 1 <= help.numberPageMax ){
+                    help.numberPage ++;
+                }
             }
             //QuitGame
             if (x >= 130 && x <= 270 && y >= 410 && y <= 410 + 140 / 3) {
