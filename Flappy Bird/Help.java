@@ -15,9 +15,9 @@ public class Help {
     Image page3RImg;
     Image wordpage3Img;
 
-    int numberPage = 1;
-    int numberPageMax = 3;
-    public void contentHelp(Graphics g) {
+    static int numberPage = 1;
+    static int numberPageMax = 3;
+    public Help() {
         leftImg = new ImageIcon(MenuGameOver.class.getResource("left.png")).getImage();
         rightImg = new ImageIcon(MenuGameOver.class.getResource("right.png")).getImage();
         backImg = new ImageIcon(MenuGameOver.class.getResource("BACK.png")).getImage();
@@ -28,7 +28,14 @@ public class Help {
         //2
         page2LImg = new ImageIcon(MenuGameOver.class.getResource("page2l.png")).getImage();
         page2RImg = new ImageIcon(MenuGameOver.class.getResource("page2r.png")).getImage();
-        wordpage1Img = new ImageIcon(MenuGameOver.class.getResource("wordpage2.jpg")).getImage();
+        wordpage2Img = new ImageIcon(MenuGameOver.class.getResource("wordpage2.jpg")).getImage();
+        //3
+        page3LImg = new ImageIcon(MenuGameOver.class.getResource("page3l.jpg")).getImage();
+        page3RImg = new ImageIcon(MenuGameOver.class.getResource("page3r.jpg")).getImage();
+        wordpage3Img = new ImageIcon(MenuGameOver.class.getResource("wordpage3.jpg")).getImage();
+
+    }
+    public void contentHelp(Graphics g) {
         // Vẽ nền
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, 400, 640);
@@ -45,13 +52,16 @@ public class Help {
         }
         else if(numberPage == numberPageMax) {
             g.drawImage(leftImg,10,580,50,50,null);
+            g.drawImage(page3LImg,0,210,195,304,null);
+            g.drawImage(page3RImg,205,210,195,304,null);
+            g.drawImage(wordpage3Img,20,60,360,139,null);
         }
-        else {
+        else if(numberPage == 2){
             g.drawImage(rightImg,340,580,50,50,null);
             g.drawImage(leftImg,10,580,50,50,null);
             g.drawImage(page2LImg,0,210,195,304,null);
             g.drawImage(page2RImg,205,210,195,304,null);
-//            g.drawImage(wordpage2Img,30,70,340,113,null);
+            g.drawImage(wordpage2Img,20,70,360,90,null);
         }
 
 

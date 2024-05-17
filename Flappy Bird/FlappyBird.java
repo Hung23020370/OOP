@@ -311,7 +311,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(state == STATE.MENU) repaint();
+        if(state == STATE.MENU || state == STATE.HELP) repaint();
         if(state == STATE.GAME) {
             if(gameOver){
                 birdTimer.stop();
