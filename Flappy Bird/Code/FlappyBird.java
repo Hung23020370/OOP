@@ -1,3 +1,5 @@
+package Code;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -125,20 +127,20 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         addKeyListener(this);
         addMouseListener(new MouseGame());
 
-        backgroundImg = new ImageIcon(getClass().getResource("bg.png")).getImage();
-        groudImg = new ImageIcon(getClass().getResource("ground.png")).getImage();
-        birdImg1 = new ImageIcon(getClass().getResource("bird1.png")).getImage();
-        birdImg2 = new ImageIcon(getClass().getResource("bird2.png")).getImage();
-        birdImg3 = new ImageIcon(getClass().getResource("bird3.png")).getImage();
+        backgroundImg = new ImageIcon(getClass().getResource("/Ảnh/bg.png")).getImage();
+        groudImg = new ImageIcon(getClass().getResource("/Ảnh/ground.png")).getImage();
+        birdImg1 = new ImageIcon(getClass().getResource("/Ảnh/bird1.png")).getImage();
+        birdImg2 = new ImageIcon(getClass().getResource("/Ảnh/bird2.png")).getImage();
+        birdImg3 = new ImageIcon(getClass().getResource("/Ảnh/bird3.png")).getImage();
 
 
-        topPipeImg = new ImageIcon(getClass().getResource("toppipe.png")).getImage();
-        bottomPipeImg = new ImageIcon(getClass().getResource("bottompipe.png")).getImage();
-        topRedPipeImg = new ImageIcon(getClass().getResource("toppipered.png")).getImage();
-        bottomRedPipeImg = new ImageIcon(getClass().getResource("bottompipered.png")).getImage();
+        topPipeImg = new ImageIcon(getClass().getResource("/Ảnh/toppipe.png")).getImage();
+        bottomPipeImg = new ImageIcon(getClass().getResource("/Ảnh/bottompipe.png")).getImage();
+        topRedPipeImg = new ImageIcon(getClass().getResource("/Ảnh/toppipered.png")).getImage();
+        bottomRedPipeImg = new ImageIcon(getClass().getResource("/Ảnh/bottompipered.png")).getImage();
 
         //Skill
-        fireImg = new ImageIcon(getClass().getResource("fire.png")).getImage();
+        fireImg = new ImageIcon(getClass().getResource("/Ảnh/fire.png")).getImage();
 
         birds = new ArrayList<>();
         pipes = new ArrayList<>();
@@ -298,16 +300,16 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         if(bird.y >= boardHeight - 104) gameOver = true;
     }
     boolean  collisionPipe(Bird a, Pipe b) {
-        return a.x < b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
-                a.x + a.width > b.x &&   //a's top right corner passes b's top left corner
-                a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
-                a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
+        return a.x <= b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
+                a.x + a.width >= b.x &&   //a's top right corner passes b's top left corner
+                a.y <= b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
+                a.y + a.height >= b.y;    //a's bottom left corner passes b's top left corner
     }
     boolean  collisionSkill(Bird a, Skill b) {
-        return a.x < b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
-                a.x + a.width > b.x &&   //a's top right corner passes b's top left corner
-                a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
-                a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
+        return a.x <= b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
+                a.x + a.width >= b.x &&   //a's top right corner passes b's top left corner
+                a.y <= b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
+                a.y + a.height >= b.y;    //a's bottom left corner passes b's top left corner
     }
     @Override
     public void actionPerformed(ActionEvent e) {

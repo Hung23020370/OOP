@@ -1,3 +1,5 @@
+package Code;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,8 +9,8 @@ public class MenuGameOver {
 
 
     public void contentMenu(Graphics g, double score, double bestScore) {
-        gameOverImg = new ImageIcon(MenuGameOver.class.getResource("gameover.png")).getImage();
-        restartImg = new ImageIcon(MenuGameOver.class.getResource("RESTART.png")).getImage();
+        gameOverImg = new ImageIcon(MenuGameOver.class.getResource("/Ảnh/gameover.png")).getImage();
+        restartImg = new ImageIcon(MenuGameOver.class.getResource("/Ảnh/RESTART.png")).getImage();
 
         g.drawImage(gameOverImg,75,150,250,250/4,null);
         g.drawImage(restartImg,140,310,120,40,null);

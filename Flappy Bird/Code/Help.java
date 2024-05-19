@@ -1,3 +1,5 @@
+package Code;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -18,21 +20,21 @@ public class Help {
     static int numberPage = 1;
     static int numberPageMax = 3;
     public Help() {
-        leftImg = new ImageIcon(MenuGameOver.class.getResource("left.png")).getImage();
-        rightImg = new ImageIcon(MenuGameOver.class.getResource("right.png")).getImage();
-        backImg = new ImageIcon(MenuGameOver.class.getResource("BACK.png")).getImage();
+        leftImg = new ImageIcon(MenuGameOver.class.getResource("/Ảnh/left.png")).getImage();
+        rightImg = new ImageIcon(MenuGameOver.class.getResource("/Ảnh/right.png")).getImage();
+        backImg = new ImageIcon(MenuGameOver.class.getResource("/Ảnh/BACK.png")).getImage();
         //1
-        page1LImg = new ImageIcon(MenuGameOver.class.getResource("page1l.jpg")).getImage();
-        page1RImg = new ImageIcon(MenuGameOver.class.getResource("page1r.png")).getImage();
-        wordpage1Img = new ImageIcon(MenuGameOver.class.getResource("wordpage1.jpg")).getImage();
+        page1LImg = new ImageIcon(MenuGameOver.class.getResource("/Ảnh/page1l.jpg")).getImage();
+        page1RImg = new ImageIcon(MenuGameOver.class.getResource("/Ảnh/page1r.png")).getImage();
+        wordpage1Img = new ImageIcon(MenuGameOver.class.getResource("/Ảnh/wordpage1.jpg")).getImage();
         //2
-        page2LImg = new ImageIcon(MenuGameOver.class.getResource("page2l.png")).getImage();
-        page2RImg = new ImageIcon(MenuGameOver.class.getResource("page2r.png")).getImage();
-        wordpage2Img = new ImageIcon(MenuGameOver.class.getResource("wordpage2.jpg")).getImage();
+        page2LImg = new ImageIcon(MenuGameOver.class.getResource("/Ảnh/page2l.png")).getImage();
+        page2RImg = new ImageIcon(MenuGameOver.class.getResource("/Ảnh/page2r.png")).getImage();
+        wordpage2Img = new ImageIcon(MenuGameOver.class.getResource("/Ảnh/wordpage2.jpg")).getImage();
         //3
-        page3LImg = new ImageIcon(MenuGameOver.class.getResource("page3l.jpg")).getImage();
-        page3RImg = new ImageIcon(MenuGameOver.class.getResource("page3r.jpg")).getImage();
-        wordpage3Img = new ImageIcon(MenuGameOver.class.getResource("wordpage3.jpg")).getImage();
+        page3LImg = new ImageIcon(MenuGameOver.class.getResource("/Ảnh/page3l.jpg")).getImage();
+        page3RImg = new ImageIcon(MenuGameOver.class.getResource("/Ảnh/page3r.jpg")).getImage();
+        wordpage3Img = new ImageIcon(MenuGameOver.class.getResource("/Ảnh/wordpage3.jpg")).getImage();
 
     }
     public void contentHelp(Graphics g) {
