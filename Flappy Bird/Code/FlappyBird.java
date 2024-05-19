@@ -125,7 +125,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
 
         setFocusable(true);
         addKeyListener(this);
-        addMouseListener(new MouseGame());
+        addMouseListener(new Code.MouseGame());
 
         backgroundImg = new ImageIcon(getClass().getResource("/Ảnh/bg.png")).getImage();
         groudImg = new ImageIcon(getClass().getResource("/Ảnh/ground.png")).getImage();
@@ -300,16 +300,16 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
         if(bird.y >= boardHeight - 104) gameOver = true;
     }
     boolean  collisionPipe(Bird a, Pipe b) {
-        return a.x <= b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
-                a.x + a.width >= b.x &&   //a's top right corner passes b's top left corner
-                a.y <= b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
-                a.y + a.height >= b.y;    //a's bottom left corner passes b's top left corner
+        return a.x <= b.x + b.width &&
+                a.x + a.width >= b.x &&
+                a.y <= b.y + b.height &&
+                a.y + a.height >= b.y;
     }
     boolean  collisionSkill(Bird a, Skill b) {
-        return a.x <= b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
-                a.x + a.width >= b.x &&   //a's top right corner passes b's top left corner
-                a.y <= b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
-                a.y + a.height >= b.y;    //a's bottom left corner passes b's top left corner
+        return a.x <= b.x + b.width &&
+                a.x + a.width >= b.x &&
+                a.y <= b.y + b.height &&
+                a.y + a.height >= b.y;
     }
     @Override
     public void actionPerformed(ActionEvent e) {
